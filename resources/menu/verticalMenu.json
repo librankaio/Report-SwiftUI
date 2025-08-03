@@ -1,0 +1,52 @@
+{
+  "menu": [
+    {
+      "url": "pemasukan-dokumen",
+      "name": "Pemasukan Dokumen",
+      "icon": "menu-icon tf-icons mdi mdi-text-box-check-outline",
+      "slug": "pemasukan"
+    },
+    {
+      "url": "pengeluaran-dokumen",
+      "name": "Pengeluaran Dokumen",
+      "icon": "menu-icon tf-icons mdi mdi-file-document-arrow-right-outline",
+      "slug": "pengeluaran"
+    },
+    {
+      "url": "mutasi-bahanbaku",
+      "name": "Mutasi Bahan Baku",
+      "icon": "menu-icon tf-icons mdi mdi-file-document-arrow-right-outline",
+      "slug": "mutasibhbaku"
+    },
+    {
+      "url": "mutasi-barang-jadi",
+      "name": "Mutasi Barang Jadi",
+      "icon": "menu-icon tf-icons mdi mdi-file-document-arrow-right-outline",
+      "slug": "mutasibj"
+    },
+    {
+      "url": "mutasi-scrap",
+      "name": "Mutasi Scrap",
+      "icon": "menu-icon tf-icons mdi mdi-file-chart-outline",
+      "slug": "mutasiscrap"
+    },
+    {
+      "url": "mutasi-mesin",
+      "name": "Mutasi Mesin",
+      "icon": "menu-icon tf-icons mdi mdi-file-chart-outline",
+      "slug": "mutasimesin"
+    },
+    {
+      "url": "mutasi-wip",
+      "name": "Mutasi Wok In Progress",
+      "icon": "menu-icon tf-icons mdi mdi-file-chart-outline",
+      "slug": "mutasiwip"
+    },
+    {
+      "url": "mutasi-loghistory",
+      "name": "Mutasi Log History",
+      "icon": "menu-icon tf-icons mdi mdi-file-chart-outline",
+      "slug": "mutasiloghist"
+    }
+  ]
+}
