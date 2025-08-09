@@ -26,6 +26,12 @@ mix.webpackConfig({
     publicPath: process.env.ASSET_URL || undefined,
     libraryTarget: 'umd'
   },
+  watchOptions: {
+    ignored: [
+      path.resolve(__dirname, 'resources/assets/vendor/libs/highlight/highlight.js'),
+      path.resolve(__dirname, 'resources/assets/vendor/libs/shepherd/shepherd.js')
+    ]
+  },
 
   plugins: [
     new IgnorePlugin({
@@ -77,6 +83,11 @@ mix.webpackConfig({
     './blueimp-helper': 'jQuery',
     './blueimp-gallery': 'blueimpGallery',
     './blueimp-gallery-video': 'blueimpGallery'
+  },
+  resolve: {
+    alias: {
+      '@': path.resolve(__dirname, 'resources/assets/js') // so you can use @/utils/number-format.js
+    }
   }
 });
 
@@ -113,6 +124,7 @@ mixAssetsDir('vendor/js/**/*.js', (src, dest) => mix.js(src, dest));
 
 // Libs
 mixAssetsDir('vendor/libs/**/*.js', (src, dest) => mix.js(src, dest));
+
 mixAssetsDir('vendor/libs/**/!(_)*.scss', (src, dest) =>
   mix.sass(src, dest.replace(/\.scss$/, '.css'), { sassOptions })
 );

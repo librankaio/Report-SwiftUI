@@ -1,8 +1,10 @@
 /**
  * DataTables Basic
  */
+import { numberFormat } from './utils/number-format.js';
 
-'use strict';
+('use strict');
+console.log(numberFormat(123456.789)); // 123,456.79
 
 let fv, offCanvasEl;
 document.addEventListener('DOMContentLoaded', function (e) {
@@ -117,375 +119,480 @@ $(function () {
     dt_multilingual_table = $('.dt-multilingual'),
     dt_basic;
 
-  // DataTable with buttons
-  // --------------------------------------------------------------------
+  const $spinner = $('#loading-spinner');
+  const $viewBtn = $('.btn.btn-primary');
 
-  if (dt_basic_table.length) {
-    dt_basic = dt_basic_table.DataTable({
-      ajax: assetsPath + 'json/table-datatable.json',
-      columns: [
-        { data: '' },
-        { data: 'id' },
-        { data: 'id' },
-        { data: 'full_name' },
-        { data: 'email' },
-        { data: 'start_date' },
-        { data: 'salary' },
-        { data: 'status' },
-        { data: '' }
-      ],
-      columnDefs: [
+  // Export buttons config (same as your original)
+  const exportButtons = [
+    {
+      extend: 'collection',
+      className: 'btn btn-label-primary dropdown-toggle me-2 waves-effect waves-light',
+      text: '<i class="mdi mdi-export-variant me-sm-1"></i> <span class="d-none d-sm-inline-block">Export</span>',
+      buttons: [
         {
-          // For Responsive
-          className: 'control',
+          extend: 'print',
+          text: '<i class="mdi mdi-printer-outline me-1" ></i>Print',
+          className: 'dropdown-item',
+          exportOptions: { columns: [3, 4, 5, 6, 7], format: { body: formatExportCell } },
+          customize: function (win) {
+            if (typeof config !== 'undefined') {
+              $(win.document.body)
+                .css('color', config.colors.headingColor)
+                .css('border-color', config.colors.borderColor)
+                .css('background-color', config.colors.bodyBg);
+            }
+            $(win.document.body)
+              .find('table')
+              .addClass('compact')
+              .css('color', 'inherit')
+              .css('border-color', 'inherit')
+              .css('background-color', 'inherit');
+          }
+        },
+        {
+          extend: 'csv',
+          text: '<i class="mdi mdi-file-document-outline me-1" ></i>Csv',
+          className: 'dropdown-item',
+          exportOptions: { columns: [3, 4, 5, 6, 7], format: { body: formatExportCell } }
+        },
+        {
+          extend: 'excel',
+          text: '<i class="mdi mdi-file-excel-outline me-1"></i>Excel',
+          className: 'dropdown-item',
+          exportOptions: { columns: [3, 4, 5, 6, 7], format: { body: formatExportCell } }
+        },
+        {
+          extend: 'pdf',
+          text: '<i class="mdi mdi-file-pdf-box me-1"></i>Pdf',
+          className: 'dropdown-item',
+          exportOptions: { columns: [3, 4, 5, 6, 7], format: { body: formatExportCell } }
+        },
+        {
+          extend: 'copy',
+          text: '<i class="mdi mdi-content-copy me-1" ></i>Copy',
+          className: 'dropdown-item',
+          exportOptions: { columns: [3, 4, 5, 6, 7], format: { body: formatExportCell } }
+        }
+      ]
+    }
+  ];
+
+  // Export cell formatter
+  function formatExportCell(inner) {
+    if (!inner || inner.length <= 0) return inner;
+    var el = $.parseHTML(inner);
+    var result = '';
+    $.each(el, function (index, item) {
+      if (item.classList !== undefined && item.classList.contains('user-name')) {
+        result = result + item.lastChild.firstChild.textContent;
+      } else if (item.innerText === undefined) {
+        result = result + item.textContent;
+      } else result = result + item.innerText;
+    });
+    return result;
+  }
+
+  // Destroy DataTable & its Buttons cleanly
+  function destroyTable() {
+    if ($.fn.DataTable.isDataTable(dt_basic_table)) {
+      try {
+        var inst = dt_basic_table.DataTable();
+        if (inst.buttons) {
+          inst.buttons().destroy();
+        }
+      } catch (e) {
+        // ignore
+      }
+      dt_basic_table.DataTable().clear().destroy();
+      // If you cloned header rows earlier for filters, ensure shown/cleaned:
+      dt_basic_table.find('thead tr').show();
+    }
+  }
+
+  // Init empty table on page load
+  dt_basic_table.DataTable({
+    processing: true,
+    serverSide: false,
+    deferLoading: 0, // forces initial draw with empty data
+    data: [], // no rows initially
+    columns: [
+      { data: null, render: (d, t, r, meta) => meta.row + 1 },
+      { data: 'jenis_dokumen' },
+      { data: 'dpnomor' },
+      { data: 'dptanggal' },
+      { data: 'bpbnomor' },
+      { data: 'bpbtanggal' },
+      { data: 'pemasok_pengirim' },
+      { data: 'kode_barang' },
+      { data: 'nama_barang' },
+      { data: 'sat' },
+      { data: 'jumlah' },
+      { data: 'nilai_barang' },
+      { data: 'nilai_barang_usd' }
+    ],
+    language: {
+      emptyTable: 'No data available in table' // custom text if you want
+    },
+    dom:
+      // '<"card-header flex-column flex-md-row"<"head-label text-center"><"dt-action-buttons text-end pt-3 pt-md-0">B>' +
+      '<"card-header flex-column flex-md-row"<"head-label text-center"><"dt-action-buttons text-end pt-3 pt-md-0"B>>' +
+      '<"row"<"col-sm-12 col-md-6"l><"col-sm-12 col-md-6 d-flex justify-content-center justify-content-md-end"f>>' +
+      '<"table-responsive"t>' +
+      '<"row"<"col-sm-12 col-md-6"i><"col-sm-12 col-md-6"p>>',
+    buttons: exportButtons
+  });
+  // create/refresh the datatable with params
+  function loadTable(jenis, dari, sampai) {
+    // Save last search parameters
+    localStorage.setItem('pemasukan_last_search', JSON.stringify({ jenis, dari, sampai }));
+
+    // UI: show spinner, disable button
+    $spinner.show();
+    $viewBtn.prop('disabled', true).html(`
+      <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+      Loading...
+    `);
+
+    // Destroy any existing table instance
+    destroyTable();
+    let lastNo = 0;
+    let lastDpNomor = null;
+    let lastBpbNomor = null;
+
+    var dt = dt_basic_table.DataTable({
+      processing: true,
+      serverSide: false,
+      ordering: false,
+      ajax: {
+        url: pemasukanUrl,
+        type: 'GET',
+        data: { jenisdok: jenis, dari: dari, sampai: sampai },
+        error: function (xhr, status, err) {
+          console.error('AJAX Error:', err);
+          restoreUI();
+        }
+      },
+      // columns: [
+      //   // NO
+      //   {
+      //     data: null,
+      //     orderable: false,
+      //     render: function (d, t, r, meta) {
+      //       if (meta.row === 0) {
+      //         lastNo = 1;
+      //         lastDpNomor = r.dpnomor;
+      //         lastBpbNomor = r.bpbnomor;
+      //         return lastNo;
+      //       }
+      //       if (r.dpnomor !== lastDpNomor) {
+      //         lastNo++;
+      //         lastDpNomor = r.dpnomor;
+      //         lastBpbNomor = r.bpbnomor;
+      //         return lastNo;
+      //       }
+      //       return '';
+      //     }
+      //   },
+      //   { data: 'jenis_dokumen', orderable: false },
+      //   { data: 'dpnomor', orderable: false },
+
+      //   // DP Tanggal
+      //   {
+      //     data: 'dptanggal',
+      //     orderable: false,
+      //     render: function (data, t, r, meta) {
+      //       if (meta.row === 0) {
+      //         lastDpNomor = r.dpnomor;
+      //         return formatDate(data);
+      //       }
+      //       if (r.dpnomor !== lastDpNomor) {
+      //         return formatDate(data);
+      //       }
+      //       return '';
+      //       // return r.dpnomor === lastDpNomor ? '' : formatDate(data);
+      //     }
+      //   },
+
+      //   // BPB Nomor
+      //   {
+      //     data: 'bpbnomor',
+      //     orderable: false,
+      //     render: function (data, type, row, meta) {
+      //       if (meta.row === 0 || row.dpnomor !== lastDpNomor || row.bpbnomor !== lastBpbNomor) {
+      //         lastBpbNomor = row.bpbnomor;
+      //         return data;
+      //       }
+      //       return '';
+      //     }
+      //   },
+
+      //   // BPB Tanggal
+      //   {
+      //     data: 'bpbtanggal',
+      //     orderable: false,
+      //     render: function (data, type, row, meta) {
+      //       if (meta.row === 0 || row.dpnomor !== lastDpNomor || row.bpbnomor !== lastBpbNomor) {
+      //         return formatDate(data);
+      //       }
+      //       return '';
+      //     }
+      //   },
+
+      //   // Pemasok Pengirim
+      //   {
+      //     data: 'pemasok_pengirim',
+      //     orderable: false,
+      //     render: function (data, type, row, meta) {
+      //       if (meta.row === 0 || row.dpnomor !== lastDpNomor || row.bpbnomor !== lastBpbNomor) {
+      //         return data;
+      //       }
+      //       return '';
+      //     }
+      //   },
+
+      //   // Kolom barang & nilai
+      //   { data: 'kode_barang', orderable: false },
+      //   { data: 'nama_barang', orderable: false },
+      //   { data: 'sat', orderable: false },
+      //   {
+      //     data: 'jumlah',
+      //     orderable: false,
+      //     render: data => (data == 0 ? '--' : numberFormat(data, 2, '.', ','))
+      //   },
+      //   {
+      //     data: 'nilai_barang',
+      //     orderable: false,
+      //     render: data => (data == 0 ? '--' : `Rp. ${numberFormat(data, 2, '.', ',')}`)
+      //   },
+      //   {
+      //     data: 'nilai_barang_usd',
+      //     orderable: false,
+      //     render: data => (data == 0 ? '--' : `$. ${numberFormat(data, 2, '.', ',')}`)
+      //   }
+      // ],
+      columns: [
+        // NO
+        {
+          data: null,
           orderable: false,
-          searchable: false,
-          responsivePriority: 2,
-          targets: 0,
-          render: function (data, type, full, meta) {
+          render: function (d, t, r, meta) {
+            if (meta.row === 0 || r.dpnomor !== lastDpNomor) {
+              lastNo++;
+              return lastNo;
+            }
             return '';
           }
         },
-        {
-          // For Checkboxes
-          targets: 1,
-          orderable: false,
-          searchable: false,
-          responsivePriority: 3,
-          checkboxes: true,
-          render: function () {
-            return '<input type="checkbox" class="dt-checkboxes form-check-input">';
-          },
-          checkboxes: {
-            selectAllRender: '<input type="checkbox" class="form-check-input">'
-          }
-        },
-        {
-          targets: 2,
-          searchable: false,
-          visible: false
-        },
-        {
-          // Avatar image/badge, Name and post
-          targets: 3,
-          responsivePriority: 4,
-          render: function (data, type, full, meta) {
-            var $user_img = full['avatar'],
-              $name = full['full_name'],
-              $post = full['post'];
-            if ($user_img) {
-              // For Avatar image
-              var $output =
-                '<img src="' + assetsPath + 'img/avatars/' + $user_img + '" alt="Avatar" class="rounded-circle">';
-            } else {
-              // For Avatar badge
-              var stateNum = Math.floor(Math.random() * 6);
-              var states = ['success', 'danger', 'warning', 'info', 'dark', 'primary', 'secondary'];
-              var $state = states[stateNum],
-                $name = full['full_name'],
-                $initials = $name.match(/\b\w/g) || [];
-              $initials = (($initials.shift() || '') + ($initials.pop() || '')).toUpperCase();
-              $output = '<span class="avatar-initial rounded-circle bg-label-' + $state + '">' + $initials + '</span>';
-            }
-            // Creates full output for row
-            var $row_output =
-              '<div class="d-flex justify-content-start align-items-center user-name">' +
-              '<div class="avatar-wrapper">' +
-              '<div class="avatar me-2">' +
-              $output +
-              '</div>' +
-              '</div>' +
-              '<div class="d-flex flex-column">' +
-              '<span class="emp_name text-truncate text-heading fw-medium">' +
-              $name +
-              '</span>' +
-              '<small class="emp_post text-truncate">' +
-              $post +
-              '</small>' +
-              '</div>' +
-              '</div>';
-            return $row_output;
-          }
-        },
-        {
-          responsivePriority: 1,
-          targets: 4
-        },
-        {
-          // Label
-          targets: -2,
-          render: function (data, type, full, meta) {
-            var $status_number = full['status'];
-            var $status = {
-              1: { title: 'Current', class: 'bg-label-primary' },
-              2: { title: 'Professional', class: ' bg-label-success' },
-              3: { title: 'Rejected', class: ' bg-label-danger' },
-              4: { title: 'Resigned', class: ' bg-label-warning' },
-              5: { title: 'Applied', class: ' bg-label-info' }
-            };
-            if (typeof $status[$status_number] === 'undefined') {
-              return data;
-            }
-            return (
-              '<span class="badge rounded-pill ' +
-              $status[$status_number].class +
-              '">' +
-              $status[$status_number].title +
-              '</span>'
-            );
-          }
-        },
-        {
-          // Actions
-          targets: -1,
-          title: 'Actions',
-          orderable: false,
-          searchable: false,
-          render: function (data, type, full, meta) {
-            return (
-              '<div class="d-inline-block">' +
-              '<a href="javascript:;" class="btn btn-sm btn-text-secondary rounded-pill btn-icon dropdown-toggle hide-arrow" data-bs-toggle="dropdown"><i class="mdi mdi-dots-vertical"></i></a>' +
-              '<ul class="dropdown-menu dropdown-menu-end m-0">' +
-              '<li><a href="javascript:;" class="dropdown-item">Details</a></li>' +
-              '<li><a href="javascript:;" class="dropdown-item">Archive</a></li>' +
-              '<div class="dropdown-divider"></div>' +
-              '<li><a href="javascript:;" class="dropdown-item text-danger delete-record">Delete</a></li>' +
-              '</ul>' +
-              '</div>' +
-              '<a href="javascript:;" class="btn btn-sm btn-text-secondary rounded-pill btn-icon item-edit"><i class="mdi mdi-pencil-outline"></i></a>'
-            );
-          }
-        }
-      ],
-      order: [[2, 'desc']],
-      // dom: '<"card-header flex-column flex-md-row"<"head-label text-center"><"dt-action-buttons text-end pt-3 pt-md-0"B>><"row"<"col-sm-12 col-md-6"l><"col-sm-12 col-md-6 d-flex justify-content-center justify-content-md-end"f>>t<"row"<"col-sm-12 col-md-6"i><"col-sm-12 col-md-6"p>>',
-      dom:
-        '<"card-header flex-column flex-md-row"' +
-        '<"head-label text-center">' +
-        '<"d-flex justify-content-between align-items-center flex-wrap pt-3 pt-md-0"' +
-        '<"custom-filter me-3">' + // Moved BEFORE export buttons
-        '<"dt-action-buttons text-end"B>' +
-        '>' +
-        '>' +
-        '<"row"' +
-        '<"col-sm-12 col-md-6"l>' +
-        '<"col-sm-12 col-md-6 d-flex justify-content-center justify-content-md-end"f>' +
-        '>' +
-        't' +
-        '<"row"' +
-        '<"col-sm-12 col-md-6"i>' +
-        '<"col-sm-12 col-md-6"p>' +
-        '>',
-      // '<"card-header flex-column flex-md-row"<"head-label text-center"><"d-flex justify-content-between align-items-center flex-wrap pt-3 pt-md-0"<"dt-action-buttons text-end me-3"B><"custom-filter">>>' +
-      // '<"row"<"col-sm-12 col-md-6"l><"col-sm-12 col-md-6 d-flex justify-content-center justify-content-md-end"f>>' +
-      // 't' +
-      // '<"row"<"col-sm-12 col-md-6"i><"col-sm-12 col-md-6"p>>',
-      displayLength: 7,
-      lengthMenu: [7, 10, 25, 50, 75, 100],
-      buttons: [
-        {
-          extend: 'collection',
-          className: 'btn btn-label-primary dropdown-toggle me-2 waves-effect waves-light',
-          text: '<i class="mdi mdi-export-variant me-sm-1"></i> <span class="d-none d-sm-inline-block">Export</span>',
-          buttons: [
-            {
-              extend: 'print',
-              text: '<i class="mdi mdi-printer-outline me-1" ></i>Print',
-              className: 'dropdown-item',
-              exportOptions: {
-                columns: [3, 4, 5, 6, 7],
-                // prevent avatar to be display
-                format: {
-                  body: function (inner, coldex, rowdex) {
-                    if (inner.length <= 0) return inner;
-                    var el = $.parseHTML(inner);
-                    var result = '';
-                    $.each(el, function (index, item) {
-                      if (item.classList !== undefined && item.classList.contains('user-name')) {
-                        result = result + item.lastChild.firstChild.textContent;
-                      } else if (item.innerText === undefined) {
-                        result = result + item.textContent;
-                      } else result = result + item.innerText;
-                    });
-                    return result;
-                  }
-                }
-              },
-              customize: function (win) {
-                //customize print view for dark
-                $(win.document.body)
-                  .css('color', config.colors.headingColor)
-                  .css('border-color', config.colors.borderColor)
-                  .css('background-color', config.colors.bodyBg);
-                $(win.document.body)
-                  .find('table')
-                  .addClass('compact')
-                  .css('color', 'inherit')
-                  .css('border-color', 'inherit')
-                  .css('background-color', 'inherit');
-              }
-            },
-            {
-              extend: 'csv',
-              text: '<i class="mdi mdi-file-document-outline me-1" ></i>Csv',
-              className: 'dropdown-item',
-              exportOptions: {
-                columns: [3, 4, 5, 6, 7],
-                // prevent avatar to be display
-                format: {
-                  body: function (inner, coldex, rowdex) {
-                    if (inner.length <= 0) return inner;
-                    var el = $.parseHTML(inner);
-                    var result = '';
-                    $.each(el, function (index, item) {
-                      if (item.classList !== undefined && item.classList.contains('user-name')) {
-                        result = result + item.lastChild.firstChild.textContent;
-                      } else if (item.innerText === undefined) {
-                        result = result + item.textContent;
-                      } else result = result + item.innerText;
-                    });
-                    return result;
-                  }
-                }
-              }
-            },
-            {
-              extend: 'excel',
-              text: '<i class="mdi mdi-file-excel-outline me-1"></i>Excel',
-              className: 'dropdown-item',
-              exportOptions: {
-                columns: [3, 4, 5, 6, 7],
-                // prevent avatar to be display
-                format: {
-                  body: function (inner, coldex, rowdex) {
-                    if (inner.length <= 0) return inner;
-                    var el = $.parseHTML(inner);
-                    var result = '';
-                    $.each(el, function (index, item) {
-                      if (item.classList !== undefined && item.classList.contains('user-name')) {
-                        result = result + item.lastChild.firstChild.textContent;
-                      } else if (item.innerText === undefined) {
-                        result = result + item.textContent;
-                      } else result = result + item.innerText;
-                    });
-                    return result;
-                  }
-                }
-              }
-            },
-            {
-              extend: 'pdf',
-              text: '<i class="mdi mdi-file-pdf-box me-1"></i>Pdf',
-              className: 'dropdown-item',
-              exportOptions: {
-                columns: [3, 4, 5, 6, 7],
-                // prevent avatar to be display
-                format: {
-                  body: function (inner, coldex, rowdex) {
-                    if (inner.length <= 0) return inner;
-                    var el = $.parseHTML(inner);
-                    var result = '';
-                    $.each(el, function (index, item) {
-                      if (item.classList !== undefined && item.classList.contains('user-name')) {
-                        result = result + item.lastChild.firstChild.textContent;
-                      } else if (item.innerText === undefined) {
-                        result = result + item.textContent;
-                      } else result = result + item.innerText;
-                    });
-                    return result;
-                  }
-                }
-              }
-            },
-            {
-              extend: 'copy',
-              text: '<i class="mdi mdi-content-copy me-1" ></i>Copy',
-              className: 'dropdown-item',
-              exportOptions: {
-                columns: [3, 4, 5, 6, 7],
-                // prevent avatar to be display
-                format: {
-                  body: function (inner, coldex, rowdex) {
-                    if (inner.length <= 0) return inner;
-                    var el = $.parseHTML(inner);
-                    var result = '';
-                    $.each(el, function (index, item) {
-                      if (item.classList !== undefined && item.classList.contains('user-name')) {
-                        result = result + item.lastChild.firstChild.textContent;
-                      } else if (item.innerText === undefined) {
-                        result = result + item.textContent;
-                      } else result = result + item.innerText;
-                    });
-                    return result;
-                  }
-                }
-              }
-            }
-          ]
-        }
-        // {
-        //   text: '<i class="mdi mdi-plus me-sm-1"></i> <span class="d-none d-sm-inline-block">Add New Record</span>',
-        //   className: 'create-new btn btn-primary waves-effect waves-light'
-        // }
-      ],
-      responsive: {
-        details: {
-          display: $.fn.dataTable.Responsive.display.modal({
-            header: function (row) {
-              var data = row.data();
-              return 'Details of ' + data['full_name'];
-            }
-          }),
-          type: 'column',
-          renderer: function (api, rowIdx, columns) {
-            var data = $.map(columns, function (col, i) {
-              return col.title !== '' // ? Do not show row in modal popup if title is blank (for check box)
-                ? '<tr data-dt-row="' +
-                    col.rowIndex +
-                    '" data-dt-column="' +
-                    col.columnIndex +
-                    '">' +
-                    '<td>' +
-                    col.title +
-                    ':' +
-                    '</td> ' +
-                    '<td>' +
-                    col.data +
-                    '</td>' +
-                    '</tr>'
-                : '';
-            }).join('');
+        { data: 'jenis_dokumen', orderable: false },
+        { data: 'dpnomor', orderable: false },
 
-            return data ? $('<table class="table"/><tbody />').append(data) : false;
+        // DP Tanggal
+        {
+          data: 'dptanggal',
+          orderable: false,
+          render: function (data, t, r, meta) {
+            return meta.row === 0 || r.dpnomor !== lastDpNomor ? formatDate(data) : '';
+          }
+        },
+
+        // BPB Nomor
+        {
+          data: 'bpbnomor',
+          orderable: false,
+          render: function (data, type, row, meta) {
+            return meta.row === 0 || row.dpnomor !== lastDpNomor || row.bpbnomor !== lastBpbNomor ? data : '';
+          }
+        },
+
+        // BPB Tanggal
+        {
+          data: 'bpbtanggal',
+          orderable: false,
+          render: function (data, type, row, meta) {
+            return meta.row === 0 || row.dpnomor !== lastDpNomor || row.bpbnomor !== lastBpbNomor
+              ? formatDate(data)
+              : '';
+          }
+        },
+
+        // Pemasok Pengirim
+        {
+          data: 'pemasok_pengirim',
+          orderable: false,
+          render: function (data, type, row, meta) {
+            return meta.row === 0 || row.dpnomor !== lastDpNomor || row.bpbnomor !== lastBpbNomor ? data : '';
+          }
+        },
+
+        { data: 'kode_barang', orderable: false },
+        { data: 'nama_barang', orderable: false },
+        { data: 'sat', orderable: false },
+        {
+          data: 'jumlah',
+          orderable: false,
+          render: data => (data == 0 ? '--' : numberFormat(data, 2, '.', ','))
+        },
+        {
+          data: 'nilai_barang',
+          orderable: false,
+          render: data => (data == 0 ? '--' : `Rp. ${numberFormat(data, 2, '.', ',')}`)
+        },
+        {
+          data: 'nilai_barang_usd',
+          orderable: false,
+          render: function (data, t, r) {
+            // update di kolom terakhir supaya semua kolom sebelumnya
+            // baca nilai lastDpNomor & lastBpbNomor yang konsisten
+            lastDpNomor = r.dpnomor;
+            lastBpbNomor = r.bpbnomor;
+            return data == 0 ? '--' : `$. ${numberFormat(data, 2, '.', ',')}`;
           }
         }
+      ],
+      dom:
+        '<"card-header flex-column flex-md-row"<"head-label text-center"><"dt-action-buttons text-end pt-3 pt-md-0">>' +
+        '<"row"<"col-sm-12 col-md-6"l><"col-sm-12 col-md-6 d-flex justify-content-center justify-content-md-end"f>>' +
+        '<"table-responsive"t>' +
+        '<"row"<"col-sm-12 col-md-6"i><"col-sm-12 col-md-6"p>>',
+      initComplete: function () {
+        try {
+          new $.fn.dataTable.Buttons(dt, { buttons: exportButtons });
+          dt.buttons(0, null).container().appendTo($('.dt-action-buttons').empty());
+        } catch (e) {
+          console.warn('Buttons init failed:', e);
+        }
+        restoreUI();
+      },
+      drawCallback: function () {
+        lastDpNomor = null;
+        lastBpbNomor = null;
+        lastNo = 0;
+      },
+      rowCallback: function (row, data, index) {
+        // Update tracker setelah baris dirender
+        lastBpbNomor = data.bpbnomor;
+        lastDpNomor = data.dpnomor;
       }
     });
-    $('.custom-filter').html(`
-      <select class="form-select form-select-sm" id="jenisDokumenSelect" style="min-width: 180px;">
-        <option selected>Pilih Jenis Dokumen</option>
-        <option value="All">All</option>
-        <option value="BC 2.0">BC 2.0</option>
-        <option value="BC 2.3">BC 2.3</option>
-        <option value="BC 2.6.2">BC 2.6.2</option>
-        <option value="BC 2.7">BC 2.7</option>
-        <option value="BC 4.0">BC 4.0</option>
-        <option value="PPFTZ-02">PPFTZ-02</option>
-      </select>
-    `);
-    $('#jenisDokumenSelect').on('change', function () {
-      const val = $(this).val();
-      if (val === 'All' || val === 'Pilih Jenis Dokumen') {
-        dt_basic.column(3).search('').draw(); // Replace 3 with the actual column index for 'Jenis Dokumen'
-      } else {
-        dt_basic
-          .column(3)
-          .search('^' + val + '$', true, false)
-          .draw();
-      }
-    });
-    $('div.head-label').html('<h5 class="card-title mb-0">DataTable with Buttons</h5>');
+    // Older
+    // var dt = dt_basic_table.DataTable({
+    //   processing: true,
+    //   serverSide: false,
+    //   ordering: false,
+    //   ajax: {
+    //     url: pemasukanUrl,
+    //     type: 'GET',
+    //     data: { jenisdok: jenis, dari: dari, sampai: sampai },
+    //     error: function (xhr, status, err) {
+    //       console.error('AJAX Error:', err);
+    //       restoreUI();
+    //     }
+    //   },
+    //   columns: [
+    //     {
+    //       data: null,
+    //       render: function (d, t, r, meta) {
+    //         // Baris pertama tabel
+    //         if (meta.row === 0) {
+    //           lastNo = 1;
+    //           return lastNo;
+    //         }
+
+    //         // Baris berikutnya
+    //         if (r.dpnomor !== lastDpNomor) {
+    //           lastDpNomor = r.dpnomor;
+    //           lastNo++;
+    //           return lastNo;
+    //         }
+
+    //         // Kalau dpnomor sama → kosong
+    //         return '';
+    //       }
+    //     },
+    //     { data: 'jenis_dokumen' },
+    //     {
+    //       data: 'dpnomor',
+    //       render: function (data, type, row, meta) {
+    //         if (type === 'display') {
+    //           if (lastDpNomor === data) {
+    //             return ''; // sama dengan sebelumnya, kosongkan
+    //           } else {
+    //             lastDpNomor = data;
+    //             return data;
+    //           }
+    //         }
+    //         return data;
+    //       }
+    //     },
+    //     {
+    //       data: 'dptanggal',
+    //       render: function (data, type, row, meta) {
+    //         // Baris pertama
+    //         if (meta.row === 0) {
+    //           lastDpNomor = row.dpnomor;
+    //           return formatDate(data);
+    //         }
+    //         // Baris berikutnya
+    //         if (row.dpnomor === lastDpNomor) {
+    //           return ''; // Kosong jika dpnomor sama
+    //         } else {
+    //           lastDpNomor = row.dpnomor;
+    //           return formatDate(data);
+    //         }
+    //       }
+    //     },
+    //     { data: 'bpbnomor' },
+    //     { data: 'bpbtanggal', render: data => formatDate(data) },
+    //     { data: 'pemasok_pengirim' },
+    //     { data: 'kode_barang' },
+    //     { data: 'nama_barang' },
+    //     { data: 'sat' },
+    //     { data: 'jumlah', render: data => numberFormat(data, 2, '.', ',') },
+    //     { data: 'nilai_barang', render: data => `Rp. ${numberFormat(data, 2, '.', ',')}` },
+    //     { data: 'nilai_barang_usd', render: data => `$. ${numberFormat(data, 2, '.', ',')}` }
+    //   ],
+    //   dom:
+    //     '<"card-header flex-column flex-md-row"<"head-label text-center"><"dt-action-buttons text-end pt-3 pt-md-0">>' +
+    //     '<"row"<"col-sm-12 col-md-6"l><"col-sm-12 col-md-6 d-flex justify-content-center justify-content-md-end"f>>' +
+    //     '<"table-responsive"t>' +
+    //     '<"row"<"col-sm-12 col-md-6"i><"col-sm-12 col-md-6"p>>',
+    //   initComplete: function () {
+    //     try {
+    //       new $.fn.dataTable.Buttons(dt, { buttons: exportButtons });
+    //       dt.buttons(0, null).container().appendTo($('.dt-action-buttons').empty());
+    //     } catch (e) {
+    //       console.warn('Buttons init failed:', e);
+    //     }
+    //     restoreUI();
+    //   },
+    //   drawCallback: function () {
+    //     lastDpNomor = null; // reset setiap kali tabel di-render ulang
+    //     lastNo = 0;
+    //   }
+    // });
+
+    // Helper to format date like PHP date('d/m/Y')
+    function formatDate(dateStr) {
+      if (!dateStr) return '';
+      let d = new Date(dateStr);
+      return ('0' + d.getDate()).slice(-2) + '/' + ('0' + (d.getMonth() + 1)).slice(-2) + '/' + d.getFullYear();
+    }
+
+    function restoreUI() {
+      $spinner.hide();
+      $viewBtn.prop('disabled', false).html('View');
+    }
+
+    return dt;
   }
+  // View click -> load table
+  $viewBtn.on('click', function () {
+    const jenis = $('#exampleFormControlSelect1').val();
+    const dari = $('#tanggal_dari').val();
+    const sampai = $('#tanggal_sampai').val();
+    loadTable(jenis, dari, sampai);
+  });
+
   // Add New record
   // ? Remove/Update this code as per your requirements
   var count = 101;
