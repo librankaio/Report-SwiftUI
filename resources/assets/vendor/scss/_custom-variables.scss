@@ -1,0 +1,10 @@
+// Forcefully override Bootstrap and theme defaults
+$primary: #0d6efd;
+$primary-color: $primary; // This drives all `.btn-primary`, `.bg-primary`, etc.
+
+// Optional: Customize button styles using your primary color
+$btn-primary-bg: $primary;
+$btn-primary-border: $primary;
+$btn-primary-color: #fff;
+$btn-primary-hover-bg: darken($primary, 7%);
+$btn-primary-hover-border: darken($primary, 7%);

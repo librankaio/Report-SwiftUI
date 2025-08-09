@@ -1,3 +1,5 @@
+// Inject this at the top (or right before @import 'bootstrap')
+// @import 'custom-variables';
 @import './_components/include';
 @import './_theme/common';
 @import './_theme/libs';

@@ -415,6 +415,7 @@ Route::get('/login', [Login::class, 'index'])->name('login');
 
 //Pemasukan
 Route::get('/pemasukan-dokumen', [Pemasukan::class, 'index'])->name('pemasukan');
+Route::get('/api/pemasukan-data', [Pemasukan::class, 'getPemasukan'])->name('pemasukandata');
 
 //Pengeluaran
 Route::get('/pengeluaran-dokumen', [Pengeluaran::class, 'index'])->name('pengeluaran');
