@@ -394,8 +394,8 @@
         <li class="nav-item navbar-dropdown dropdown-user dropdown">
             <a class="nav-link dropdown-toggle hide-arrow" href="javascript:void(0);" data-bs-toggle="dropdown">
                 <div class="avatar avatar-online">
-                    <img src="{{ Auth::user() ? Auth::user()->profile_photo_url : asset('assets/img/avatars/1.png') }}"
-                        alt class="w-px-40 h-auto rounded-circle">
+                    {{-- <img src="{{ Auth::user() ? Auth::user()->profile_photo_url : asset('assets/img/avatars/1.png') }}" --}}
+                    <img src=" {{ asset('assets/img/avatars/1.png') }}" alt class="w-px-40 h-auto rounded-circle">
                 </div>
             </a>
             <ul class="dropdown-menu dropdown-menu-end">
@@ -432,64 +432,7 @@
                         <span class="align-middle">My Profile</span>
                     </a>
                 </li>
-                @if (Auth::check() && Laravel\Jetstream\Jetstream::hasApiFeatures())
-                    <li>
-                        <a class="dropdown-item" href="{{ route('api-tokens.index') }}">
-                            <i class='mdi mdi-key-outline me-2'></i>
-                            <span class="align-middle">API Tokens</span>
-                        </a>
-                    </li>
-                @endif
-                <li>
-                    <a class="dropdown-item" href="{{ url('pages/account-settings-billing') }}">
-                        <i class="mdi mdi-credit-card-outline me-2"></i>
-                        <span class="align-middle">Billing</span>
-                    </a>
-                </li>
-                @if (Auth::User() && Laravel\Jetstream\Jetstream::hasTeamFeatures())
-                    <li>
-                        <div class="dropdown-divider"></div>
-                    </li>
-                    <li>
-                        <h6 class="dropdown-header">Manage Team</h6>
-                    </li>
-                    <li>
-                        <div class="dropdown-divider"></div>
-                    </li>
-                    <li>
-                        <a class="dropdown-item"
-                            href="{{ Auth::user() ? route('teams.show', Auth::user()->currentTeam->id) : 'javascript:void(0)' }}">
-                            <i class='mdi mdi-cog-outline me-2'></i>
-                            <span class="align-middle">Team Settings</span>
-                        </a>
-                    </li>
-                    @can('create', Laravel\Jetstream\Jetstream::newTeamModel())
-                        <li>
-                            <a class="dropdown-item" href="{{ route('teams.create') }}">
-                                <i class='mdi mdi-account-outline me-2'></i>
-                                <span class="align-middle">Create New Team</span>
-                            </a>
-                        </li>
-                    @endcan
-                    @if (Auth::user()->allTeams()->count() > 1)
-                        <li>
-                            <div class="dropdown-divider"></div>
-                        </li>
-                        <li>
-                            <h6 class="dropdown-header">Switch Teams</h6>
-                        </li>
-                        <li>
-                            <div class="dropdown-divider"></div>
-                        </li>
-                    @endif
-                    @if (Auth::user())
-                        @foreach (Auth::user()->allTeams() as $team)
-                            {{-- Below commented code read by artisan command while installing jetstream. !! Do not remove if you want to use jetstream. --}}
 
-                            {{-- <x-switchable-team :team="$team" /> --}}
-                        @endforeach
-                    @endif
-                @endif
                 <li>
                     <div class="dropdown-divider"></div>
                 </li>
@@ -501,9 +444,12 @@
                             <span class="align-middle">Logout</span>
                         </a>
                     </li>
-                    <form method="POST" id="logout-form" action="{{ route('logout') }}">
-                        @csrf
+                    <form method="GET" id="logout-form" action="{{ route('logout') }}">
+
                     </form>
+                    {{-- <form method="POST" id="logout-form" action="{{ route('logout') }}">
+                        @csrf
+                    </form> --}}
                 @else
                     <li>
                         <a class="dropdown-item"
@@ -521,8 +467,7 @@
 
 <!-- Search Small Screens -->
 <div class="navbar-search-wrapper search-input-wrapper {{ isset($menuHorizontal) ? $containerNav : '' }} d-none">
-    <input type="text"
-        class="form-control search-input {{ isset($menuHorizontal) ? '' : $containerNav }} border-0"
+    <input type="text" class="form-control search-input {{ isset($menuHorizontal) ? '' : $containerNav }} border-0"
         placeholder="Search..." aria-label="Search...">
     <i class="mdi mdi-close search-toggler cursor-pointer"></i>
 </div>

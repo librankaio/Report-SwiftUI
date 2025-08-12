@@ -30,7 +30,7 @@
     <script>
         const pemasukanUrl = "{{ route('pemasukandata') }}";
     </script>
-    <script type="module" src="{{ asset('assets/js/tables-customs.js') }}"></script>
+    <script type="module" src="{{ asset('assets/js/page-pemasukan.js') }}"></script>
 @endsection
 
 @section('content')
@@ -63,6 +63,17 @@
                     <div class="form-floating form-floating-outline mb-4">
                         <input class="form-control" type="date" id="tanggal_sampai" value="{{ date('Y-m-d') }}" />
                         <label for="tanggal_sampai">Sampai Tanggal</label>
+                    </div>
+                    <div class="form-floating form-floating-outline mb-4">
+                        <select class="form-select" id="jenis_pencarian" aria-label="Default select example">
+                            <option selected>Pilih Jenis Pencarian</option>
+                            <option value='No Pendaftaran'>No Pendaftaran</option>
+                            <option value="No Bukti Penerimaan">No Bukti Penerimaan</option>
+                            <option value="Supplier">Supplier</option>
+                            <option value="Kode Barang">Kode Barang</option>
+                            <option value="Nama Barang">Nama Barang</option>
+                        </select>
+                        <label for="jenis_pencarian">Jenis Pencarian</label>
                     </div>
                     <button type="button" class="btn btn-primary">View</button>
                 </div>

@@ -24,7 +24,7 @@
 @endsection
 
 @section('page-script')
-    <script src="{{ asset('assets/js/pages-auth.js') }}"></script>
+    <script src="{{ asset('assets/js/page-login.js') }}"></script>
 @endsection
 
 @section('content')
@@ -49,7 +49,9 @@
                     </div>
                     <!-- /Logo -->
                     <div class="card-body mt-2">
-                        <form id="formAuthentication" class="mb-3" action="{{ url('/') }}" method="GET">
+                        {{-- <form id="formAuthentication" class="mb-3" action="{{ url('/') }}" method="GET"> --}}
+                        <form id="formAuthentication" class="mb-3" action="{{ route('login.post') }}" method="POST">
+                            @csrf
                             <div class="form-floating form-floating-outline mb-3">
                                 <input type="text" class="form-control" id="username" name="username"
                                     placeholder="Enter your username" autofocus>

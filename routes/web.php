@@ -167,7 +167,7 @@ use App\Http\Controllers\pemasukan\Pemasukan;
 use App\Http\Controllers\pengeluaran\Pengeluaran;
 
 // Main Page Route
-Route::get('/', [Analytics::class, 'index'])->name('dashboard-analytics');
+// Route::get('/', [Analytics::class, 'index'])->name('dashboard-analytics');
 Route::get('/dashboard/analytics', [Analytics::class, 'index'])->name('dashboard-analytics');
 Route::get('/dashboard/crm', [Crm::class, 'index'])->name('dashboard-crm');
 // locale
@@ -411,11 +411,15 @@ Route::get('/laravel/user-management', [UserManagement::class, 'UserManagement']
 Route::resource('/user-list', UserManagement::class);
 
 //Login
-Route::get('/login', [Login::class, 'index'])->name('login');
+Route::get('/', [Login::class, 'index'])->name('login');
+Route::post('/login', [Login::class, 'postLogin'])->name('login.post');
+Route::get('/logout', [Login::class, 'logout'])->name('logout');
 
-//Pemasukan
-Route::get('/pemasukan-dokumen', [Pemasukan::class, 'index'])->name('pemasukan');
-Route::get('/api/pemasukan-data', [Pemasukan::class, 'getPemasukan'])->name('pemasukandata');
+Route::group(['middleware' => ['auth']], function () {
+  //Pemasukan
+  Route::get('/pemasukan-dokumen', [Pemasukan::class, 'index'])->name('pemasukan');
+  Route::get('/api/pemasukan-data', [Pemasukan::class, 'getPemasukan'])->name('pemasukandata');
+});
 
 //Pengeluaran
 Route::get('/pengeluaran-dokumen', [Pengeluaran::class, 'index'])->name('pengeluaran');
