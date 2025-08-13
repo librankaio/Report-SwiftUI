@@ -144,7 +144,11 @@ mixAssetsDir('vendor/fonts/!(_)*.scss', (src, dest) =>
  |--------------------------------------------------------------------------
  */
 
-mixAssetsDir('js/**/*.js', (src, dest) => mix.scripts(src, dest));
+// mixAssetsDir('js/**/*.js', (src, dest) => mix.scripts(src, dest));
+glob.sync('resources/assets/js/**/*.js').forEach(file => {
+  const dest = file.replace('resources/assets/js', 'public/assets/js');
+  mix.js(file, dest);
+});
 mixAssetsDir('css/**/*.css', (src, dest) => mix.copy(src, dest));
 // laravel working crud app related js
 mix.js('resources/js/laravel-user-management.js', 'public/js/');
