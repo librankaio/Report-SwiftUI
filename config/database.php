@@ -59,11 +59,6 @@ return [
       'options' => extension_loaded('pdo_mysql')
         ? array_filter([
           PDO::MYSQL_ATTR_SSL_CA => env('MYSQL_ATTR_SSL_CA'),
-          //agar tidak terpotong length numbernya, tambahkan dibawah
-          // PDO::MYSQL_ATTR_INIT_COMMAND => "SET SESSION sql_mode='', NAMES utf8mb4 COLLATE utf8mb4_unicode_ci",
-          // PDO::ATTR_STRINGIFY_FETCHES => false,
-          // PDO::ATTR_EMULATE_PREPARES => false,
-          // PDO::MYSQL_ATTR_USE_BUFFERED_QUERY => true,
         ])
         : [],
     ],
