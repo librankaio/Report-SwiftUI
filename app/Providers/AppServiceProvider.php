@@ -2,7 +2,9 @@
 
 namespace App\Providers;
 
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\ServiceProvider;
+use PDO;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -20,5 +22,9 @@ class AppServiceProvider extends ServiceProvider
   public function boot(): void
   {
     //
+    // Ensure decimals are returned as strings
+    DB::connection()
+      ->getPdo()
+      ->setAttribute(PDO::ATTR_STRINGIFY_FETCHES, true);
   }
 }

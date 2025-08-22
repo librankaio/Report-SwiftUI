@@ -29,6 +29,7 @@
 @section('page-script')
     <script>
         const pemasukanUrl = "{{ route('pemasukandata') }}";
+        const pemasukanExcelUrl = "{{ route('exportexcelpemasukan') }}";
     </script>
     <script type="module" src="{{ asset('assets/js/page-pemasukan.js') }}"></script>
 @endsection

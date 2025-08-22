@@ -244,7 +244,7 @@ $(function () {
   // create/refresh the datatable with params
   function loadTable(jenis, dari, sampai) {
     // Save last search parameters
-    localStorage.setItem('pemasukan_last_search', JSON.stringify({ jenis, dari, sampai }));
+    localStorage.setItem('pengeluaran_last_search', JSON.stringify({ jenis, dari, sampai }));
 
     // UI: show spinner, disable button
     $spinner.show();
@@ -279,7 +279,7 @@ $(function () {
       serverSide: false,
       ordering: false,
       ajax: {
-        url: pemasukanUrl,
+        url: pengeluaranUrl,
         type: 'GET',
         data: { jenisdok: jenis, dari: dari, sampai: sampai },
         error: function (xhr, status, err) {
@@ -326,7 +326,7 @@ $(function () {
           }
         },
         {
-          data: 'pemasok_pengirim',
+          data: 'pembeli_penerima',
           orderable: false,
           render: function (data, type, row, meta) {
             return meta.row === 0 || row.dpnomor !== lastDpNomor || row.bpbnomor !== lastBpbNomor ? data : '';
@@ -404,125 +404,6 @@ $(function () {
         lastDpNomor = data.dpnomor;
       }
     });
-
-    // var dt = dt_basic_table.DataTable({
-    //   processing: true,
-    //   serverSide: false,
-    //   ordering: false,
-    //   ajax: {
-    //     url: pemasukanUrl,
-    //     type: 'GET',
-    //     data: { jenisdok: jenis, dari: dari, sampai: sampai },
-    //     error: function (xhr, status, err) {
-    //       console.error('AJAX Error:', err);
-    //       restoreUI();
-    //     }
-    //   },
-    //   columns: [
-    //     // NO
-    //     {
-    //       data: null,
-    //       orderable: false,
-    //       render: function (d, t, r, meta) {
-    //         if (meta.row === 0 || r.dpnomor !== lastDpNomor) {
-    //           lastNo++;
-    //           return lastNo;
-    //         }
-    //         return '';
-    //       }
-    //     },
-    //     { data: 'jenis_dokumen', orderable: false },
-    //     { data: 'dpnomor', orderable: false },
-
-    //     // DP Tanggal
-    //     {
-    //       data: 'dptanggal',
-    //       orderable: false,
-    //       render: function (data, t, r, meta) {
-    //         return meta.row === 0 || r.dpnomor !== lastDpNomor ? formatDate(data) : '';
-    //       }
-    //     },
-
-    //     // BPB Nomor
-    //     {
-    //       data: 'bpbnomor',
-    //       orderable: false,
-    //       render: function (data, type, row, meta) {
-    //         return meta.row === 0 || row.dpnomor !== lastDpNomor || row.bpbnomor !== lastBpbNomor ? data : '';
-    //       }
-    //     },
-
-    //     // BPB Tanggal
-    //     {
-    //       data: 'bpbtanggal',
-    //       orderable: false,
-    //       render: function (data, type, row, meta) {
-    //         return meta.row === 0 || row.dpnomor !== lastDpNomor || row.bpbnomor !== lastBpbNomor
-    //           ? formatDate(data)
-    //           : '';
-    //       }
-    //     },
-
-    //     // Pemasok Pengirim
-    //     {
-    //       data: 'pemasok_pengirim',
-    //       orderable: false,
-    //       render: function (data, type, row, meta) {
-    //         return meta.row === 0 || row.dpnomor !== lastDpNomor || row.bpbnomor !== lastBpbNomor ? data : '';
-    //       }
-    //     },
-
-    //     { data: 'kode_barang', orderable: false },
-    //     { data: 'nama_barang', orderable: false },
-    //     { data: 'sat', orderable: false },
-    //     {
-    //       data: 'jumlah',
-    //       orderable: false,
-    //       render: data => (data == 0 ? '--' : numberFormat(data, 2, '.', ','))
-    //     },
-    //     {
-    //       data: 'nilai_barang',
-    //       orderable: false,
-    //       render: data => (data == 0 ? '--' : `Rp. ${numberFormat(data, 2, '.', ',')}`)
-    //     },
-    //     {
-    //       data: 'nilai_barang_usd',
-    //       orderable: false,
-    //       render: function (data, t, r) {
-    //         // update di kolom terakhir supaya semua kolom sebelumnya
-    //         // baca nilai lastDpNomor & lastBpbNomor yang konsisten
-    //         lastDpNomor = r.dpnomor;
-    //         lastBpbNomor = r.bpbnomor;
-    //         return data == 0 ? '--' : `$. ${numberFormat(data, 2, '.', ',')}`;
-    //       }
-    //     }
-    //   ],
-    //   dom:
-    //     '<"card-header flex-column flex-md-row"<"head-label text-center"><"dt-action-buttons text-end pt-3 pt-md-0">>' +
-    //     '<"row"<"col-sm-12 col-md-6"l><"col-sm-12 col-md-6 d-flex justify-content-center justify-content-md-end"f>>' +
-    //     '<"table-responsive"t>' +
-    //     '<"row"<"col-sm-12 col-md-6"i><"col-sm-12 col-md-6"p>>',
-    //   initComplete: function () {
-    //     try {
-    //       new $.fn.dataTable.Buttons(dt, { buttons: exportButtons });
-    //       dt.buttons(0, null).container().appendTo($('.dt-action-buttons').empty());
-    //     } catch (e) {
-    //       console.warn('Buttons init failed:', e);
-    //     }
-    //     restoreUI();
-    //   },
-    //   drawCallback: function () {
-    //     lastDpNomor = null;
-    //     lastBpbNomor = null;
-    //     lastNo = 0;
-    //   },
-    //   rowCallback: function (row, data, index) {
-    //     // Update tracker setelah baris dirender
-    //     lastBpbNomor = data.bpbnomor;
-    //     lastDpNomor = data.dpnomor;
-    //   }
-    // });
-
     // Helper to format date like PHP date('d/m/Y')
     function formatDate(dateStr) {
       if (!dateStr) return '';

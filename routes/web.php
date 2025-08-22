@@ -419,15 +419,25 @@ Route::group(['middleware' => ['auth']], function () {
   //Pemasukan
   Route::get('/pemasukan-dokumen', [Pemasukan::class, 'index'])->name('pemasukan');
   Route::get('/api/pemasukan-data', [Pemasukan::class, 'getPemasukan'])->name('pemasukandata');
+  Route::get('/exportexcelpemasukan', [Pemasukan::class, 'exportExcel'])->name('exportexcelpemasukan');
 });
 
 //Pengeluaran
 Route::get('/pengeluaran-dokumen', [Pengeluaran::class, 'index'])->name('pengeluaran');
+Route::get('/api/pengeluaran-data', [Pengeluaran::class, 'getPengeluaran'])->name('pengeluarandata');
 
 //Mutasi
 Route::get('/mutasi-bahanbaku', [MutasiBhnBaku::class, 'index'])->name('mutasibhbaku');
+Route::get('/api/mutasi-bahanbaku-data', [MutasiBhnBaku::class, 'getMutasibhnbaku'])->name('mutasibhnbakudata');
+
 Route::get('/mutasi-barang-jadi', [MutasiBj::class, 'index'])->name('mutasibj');
+Route::get('/api/mutasi-barang-jadi-data', [MutasiBj::class, 'getMutasibrgjadi'])->name('mutasibjdata');
+
 Route::get('/mutasi-scrap', [MutasiScrap::class, 'index'])->name('mutasiscrap');
+Route::get('/api/mutasi-scrap-data', [MutasiScrap::class, 'getMutasiScrap'])->name('mutasiscrapdata');
+
 Route::get('/mutasi-mesin', [MutasiMesin::class, 'index'])->name('mutasimesin');
+Route::get('/api/mutasi-mesin-data', [MutasiMesin::class, 'getMutasiMesin'])->name('mutasimesindata');
+
 Route::get('/mutasi-wip', [MutasiWip::class, 'index'])->name('mutasiwip');
 Route::get('/mutasi-loghistory', [MutasiLoghist::class, 'index'])->name('mutasiloghist');

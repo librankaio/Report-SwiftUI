@@ -5,107 +5,6 @@ import { numberFormat } from './utils/number-format.js';
 
 ('use strict');
 
-// let fv, offCanvasEl;
-document.addEventListener('DOMContentLoaded', function (e) {
-  //   (function () {
-  //     const formAddNewRecord = document.getElementById('form-add-new-record');
-  //     setTimeout(() => {
-  //       const newRecord = document.querySelector('.create-new'),
-  //         offCanvasElement = document.querySelector('#add-new-record');
-  //       // To open offCanvas, to add new record
-  //       if (newRecord) {
-  //         newRecord.addEventListener('click', function () {
-  //           offCanvasEl = new bootstrap.Offcanvas(offCanvasElement);
-  //           // Empty fields on offCanvas open
-  //           (offCanvasElement.querySelector('.dt-full-name').value = ''),
-  //             (offCanvasElement.querySelector('.dt-post').value = ''),
-  //             (offCanvasElement.querySelector('.dt-email').value = ''),
-  //             (offCanvasElement.querySelector('.dt-date').value = ''),
-  //             (offCanvasElement.querySelector('.dt-salary').value = '');
-  //           // Open offCanvas with form
-  //           offCanvasEl.show();
-  //         });
-  //       }
-  //     }, 200);
-  //     // Form validation for Add new record
-  //     fv = FormValidation.formValidation(formAddNewRecord, {
-  //       fields: {
-  //         basicFullname: {
-  //           validators: {
-  //             notEmpty: {
-  //               message: 'The name is required'
-  //             }
-  //           }
-  //         },
-  //         basicPost: {
-  //           validators: {
-  //             notEmpty: {
-  //               message: 'Post field is required'
-  //             }
-  //           }
-  //         },
-  //         basicEmail: {
-  //           validators: {
-  //             notEmpty: {
-  //               message: 'The Email is required'
-  //             },
-  //             emailAddress: {
-  //               message: 'The value is not a valid email address'
-  //             }
-  //           }
-  //         },
-  //         basicDate: {
-  //           validators: {
-  //             notEmpty: {
-  //               message: 'Joining Date is required'
-  //             },
-  //             date: {
-  //               format: 'MM/DD/YYYY',
-  //               message: 'The value is not a valid date'
-  //             }
-  //           }
-  //         },
-  //         basicSalary: {
-  //           validators: {
-  //             notEmpty: {
-  //               message: 'Basic Salary is required'
-  //             }
-  //           }
-  //         }
-  //       },
-  //       plugins: {
-  //         trigger: new FormValidation.plugins.Trigger(),
-  //         bootstrap5: new FormValidation.plugins.Bootstrap5({
-  //           // Use this for enabling/changing valid/invalid class
-  //           // eleInvalidClass: '',
-  //           eleValidClass: '',
-  //           rowSelector: '.col-sm-12'
-  //         }),
-  //         submitButton: new FormValidation.plugins.SubmitButton(),
-  //         // defaultSubmit: new FormValidation.plugins.DefaultSubmit(),
-  //         autoFocus: new FormValidation.plugins.AutoFocus()
-  //       },
-  //       init: instance => {
-  //         instance.on('plugins.message.placed', function (e) {
-  //           if (e.element.parentElement.classList.contains('input-group')) {
-  //             e.element.parentElement.insertAdjacentElement('afterend', e.messageElement);
-  //           }
-  //         });
-  //       }
-  //     });
-  //     // FlatPickr Initialization & Validation
-  //     flatpickr(formAddNewRecord.querySelector('[name="basicDate"]'), {
-  //       enableTime: false,
-  //       // See https://flatpickr.js.org/formatting/
-  //       dateFormat: 'm/d/Y',
-  //       // After selecting a date, we need to revalidate the field
-  //       onChange: function () {
-  //         fv.revalidateField('basicDate');
-  //       }
-  //     });
-  //   })();
-});
-
 // datatable (jquery)
 $(function () {
   var dt_basic_table = $('.datatables-basic');
@@ -163,23 +62,6 @@ $(function () {
           text: '<i class="mdi mdi-content-copy me-1" ></i>Copy',
           className: 'dropdown-item',
           exportOptions: { columns: [3, 4, 5, 6, 7], format: { body: formatExportCell } }
-        },
-        {
-          text: '<i class="mdi mdi-download me-1"></i>Download Excel',
-          className: 'dropdown-item',
-          action: function () {
-            const tanggal_dari = $('#tanggal_dari').val();
-            const tanggal_sampai = $('#tanggal_sampai').val();
-            const jenisdok = $('#exampleFormControlSelect1').val();
-            // const jenisPencarian = $('#jenis_pencarian').val();
-            // const nilaiPencarian = $('#nilai_pencarian').val();
-
-            let url = pemasukanExcelUrl + `?dari=${tanggal_dari}&sampai=${tanggal_sampai}&jenisdok=${jenisdok}`;
-            // `&jenis_pencarian=${jenisPencarian}&nilai_pencarian=${nilaiPencarian}`;
-            // `&jenis_pencarian=${jenisPencarian}&nilai_pencarian=${nilaiPencarian}`;
-
-            window.location.href = url;
-          }
         }
       ]
     }
@@ -225,18 +107,16 @@ $(function () {
     data: [], // no rows initially
     columns: [
       { data: null, render: (d, t, r, meta) => meta.row + 1 },
-      { data: 'jenis_dokumen' },
-      { data: 'dpnomor' },
-      { data: 'dptanggal' },
-      { data: 'bpbnomor' },
-      { data: 'bpbtanggal' },
-      { data: 'pemasok_pengirim' },
-      { data: 'kode_barang' },
-      { data: 'nama_barang' },
-      { data: 'sat' },
-      { data: 'jumlah' },
-      { data: 'nilai_barang' },
-      { data: 'nilai_barang_usd' }
+      { data: 'code_mitem' },
+      { data: 'name_mitem' },
+      { data: 'satuan' },
+      { data: 'stock_awal' },
+      { data: 'stock_in' },
+      { data: 'stock_out' },
+      { data: 'stock_akhir' },
+      { data: 'stock_opname' },
+      { data: 'selisih' },
+      { data: 'keterangan' }
     ],
     language: {
       emptyTable: 'No data available in table' // custom text if you want
@@ -250,33 +130,31 @@ $(function () {
     buttons: exportButtons
   });
   // create/refresh the datatable with params
-  function loadTable(jenis, dari, sampai, jenis_pencarian) {
+  function loadTable(dari, sampai) {
     // Save last search parameters
-    localStorage.setItem('pemasukan_last_search', JSON.stringify({ jenis, dari, sampai }));
+    localStorage.setItem('mutasibrgjadi_last_search', JSON.stringify({ dari, sampai }));
 
-    // UI: show spinner, disable button
-    $spinner.show();
     $viewBtn.prop('disabled', true).html(`
       <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
       Loading...
     `);
 
     // Remove previous footer if exists
-    $('#footerTotals').remove();
+    // $('#footerTotals').remove();
     // Destroy any existing table instance
     destroyTable();
-    $(dt_basic_table).after(`
-      <div class="row mt-2" id="footerTotals">
-        <div class="col text-end fw-bold">Total Rp.</div>
-        <div class="col-auto">
-          <input type="text" class="form-control" id="totalRp" readonly />
-        </div>
-        <div class="col text-end fw-bold">Total USD ($)</div>
-        <div class="col-auto">
-          <input type="text" class="form-control" id="totalUsd" readonly />
-        </div>
-      </div>
-    `);
+    // $(dt_basic_table).after(`
+    //   <div class="row mt-2" id="footerTotals">
+    //     <div class="col text-end fw-bold">Total Rp.</div>
+    //     <div class="col-auto">
+    //       <input type="text" class="form-control" id="totalRp" readonly />
+    //     </div>
+    //     <div class="col text-end fw-bold">Total USD ($)</div>
+    //     <div class="col-auto">
+    //       <input type="text" class="form-control" id="totalUsd" readonly />
+    //     </div>
+    //   </div>
+    // `);
 
     let lastNo = 0;
     let lastDpNomor = null;
@@ -287,9 +165,9 @@ $(function () {
       serverSide: false,
       ordering: false,
       ajax: {
-        url: pemasukanUrl,
+        url: mutasiscrapUrl,
         type: 'GET',
-        data: { jenisdok: jenis, dari: dari, sampai: sampai, jenis_pencarian: jenis_pencarian },
+        data: { dari: dari, sampai: sampai },
         error: function (xhr, status, err) {
           console.error('AJAX Error:', err);
           restoreUI();
@@ -300,66 +178,51 @@ $(function () {
         {
           data: null,
           orderable: false,
-          render: function (d, t, r, meta) {
-            if (meta.row === 0 || r.dpnomor !== lastDpNomor) {
-              lastNo++;
-              return lastNo;
-            }
-            return '';
-          }
-        },
-        { data: 'jenis_dokumen', orderable: false },
-        { data: 'dpnomor', orderable: false },
-        {
-          data: 'dptanggal',
-          orderable: false,
-          render: function (data, t, r, meta) {
-            return meta.row === 0 || r.dpnomor !== lastDpNomor ? formatDate(data) : '';
-          }
-        },
-        {
-          data: 'bpbnomor',
-          orderable: false,
+          searchable: false,
           render: function (data, type, row, meta) {
-            return meta.row === 0 || row.dpnomor !== lastDpNomor || row.bpbnomor !== lastBpbNomor ? data : '';
+            return meta.row + 1; // default row number
           }
         },
+        { data: 'code_mitem', orderable: false },
+        { data: 'name_mitem', orderable: false },
+        { data: 'satuan', orderable: false },
         {
-          data: 'bpbtanggal',
-          orderable: false,
-          render: function (data, type, row, meta) {
-            return meta.row === 0 || row.dpnomor !== lastDpNomor || row.bpbnomor !== lastBpbNomor
-              ? formatDate(data)
-              : '';
-          }
-        },
-        {
-          data: 'pemasok_pengirim',
-          orderable: false,
-          render: function (data, type, row, meta) {
-            return meta.row === 0 || row.dpnomor !== lastDpNomor || row.bpbnomor !== lastBpbNomor ? data : '';
-          }
-        },
-        { data: 'kode_barang', orderable: false },
-        { data: 'nama_barang', orderable: false },
-        { data: 'sat', orderable: false },
-        {
-          data: 'jumlah',
+          data: 'stock_awal',
           orderable: false,
           render: data => (data == 0 ? '--' : numberFormat(data, 2, '.', ','))
         },
         {
-          data: 'nilai_barang',
+          data: 'stock_in',
           orderable: false,
-          render: data => (data == 0 ? '--' : `Rp. ${numberFormat(data, 2, '.', ',')}`)
+          render: data => (data == 0 ? '--' : `${numberFormat(data, 2, '.', ',')}`)
         },
         {
-          data: 'nilai_barang_usd',
+          data: 'stock_out',
           orderable: false,
-          render: function (data, t, r) {
-            lastDpNomor = r.dpnomor;
-            lastBpbNomor = r.bpbnomor;
-            return data == 0 ? '--' : `$. ${numberFormat(data, 2, '.', ',')}`;
+          render: data => (data == 0 ? '--' : `${numberFormat(data, 2, '.', ',')}`)
+        },
+        {
+          data: 'stock_akhir',
+          orderable: false,
+          render: data => (data == 0 ? '--' : `${numberFormat(data, 2, '.', ',')}`)
+        },
+        {
+          data: 'stock_opname',
+          orderable: false,
+          render: data => (data == 0 ? '--' : `${numberFormat(data, 2, '.', ',')}`)
+        },
+        {
+          data: null,
+          orderable: false,
+          render: function () {
+            return '-'; // isi cell
+          }
+        },
+        {
+          data: null,
+          orderable: false,
+          render: function () {
+            return 'Sesuai'; // isi cell
           }
         }
       ],
@@ -428,10 +291,8 @@ $(function () {
   }
   // View click -> load table
   $viewBtn.on('click', function () {
-    const jenis = $('#exampleFormControlSelect1').val();
     const dari = $('#tanggal_dari').val();
     const sampai = $('#tanggal_sampai').val();
-    const jenis_pencarian = $('#jenis_pencarian').val();
-    loadTable(jenis, dari, sampai, jenis_pencarian);
+    loadTable(dari, sampai);
   });
 });
