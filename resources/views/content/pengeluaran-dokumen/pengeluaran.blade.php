@@ -26,7 +26,6 @@
 @endsection
 
 @section('page-script')
-    <script src="{{ asset('assets/js/tables-customs.js') }}"></script>
     <script>
         const pengeluaranUrl = "{{ route('pengeluarandata') }}";
     </script>
