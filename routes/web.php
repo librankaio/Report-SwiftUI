@@ -437,7 +437,10 @@ Route::group(['middleware' => ['auth']], function () {
 
   Route::get('/mutasi-mesin', [MutasiMesin::class, 'index'])->name('mutasimesin');
   Route::get('/api/mutasi-mesin-data', [MutasiMesin::class, 'getMutasiMesin'])->name('mutasimesindata');
-});
 
-Route::get('/mutasi-wip', [MutasiWip::class, 'index'])->name('mutasiwip');
-Route::get('/mutasi-loghistory', [MutasiLoghist::class, 'index'])->name('mutasiloghist');
+  Route::get('/mutasi-wip', [MutasiWip::class, 'index'])->name('mutasiwip');
+  Route::get('/api/mutasi-wip-data', [MutasiWip::class, 'getMutasiWip'])->name('mutasiwipdata');
+
+  Route::get('/mutasi-loghistory', [MutasiLoghist::class, 'index'])->name('mutasiloghist');
+  Route::get('/api/mutasi-log-history', [MutasiLoghist::class, 'getLogHistory'])->name('mutasiloghistdata');
+});

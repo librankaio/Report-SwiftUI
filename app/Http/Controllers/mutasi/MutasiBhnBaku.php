@@ -18,8 +18,8 @@ class MutasiBhnBaku extends Controller
 
   public function getMutasibhnbaku(Request $request)
   {
-    $datefrForm = $request->input('tanggal_dari');
-    $datetoForm = $request->input('tanggal_sampai');
+    $datefrForm = $request->input('dari');
+    $datetoForm = $request->input('sampai');
     $compcode = session()->get('comp_code');
 
     $results = DB::select('CALL rptmutasibahanbaku(?, ?, ?)', [$datefrForm, $datetoForm, $compcode]);

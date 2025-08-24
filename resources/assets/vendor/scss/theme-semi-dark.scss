@@ -1,9 +1,10 @@
+@import 'custom-variables';
 @import './_components/include';
 @import './_theme/common';
 @import './_theme/libs';
 @import './_theme/pages';
 
-$primary-color: #666cff;
+// $primary-color: #666cff;
 $body-bg: #f7f7f9;
 
 body {

@@ -15,8 +15,8 @@ class MutasiBj extends Controller
 
   public function getMutasibrgjadi(Request $request)
   {
-    $datefrForm = $request->input('tanggal_dari');
-    $datetoForm = $request->input('tanggal_sampai');
+    $datefrForm = $request->input('dari');
+    $datetoForm = $request->input('sampai');
     $compcode = session()->get('comp_code');
 
     $results = DB::select('CALL rptmutasibarangjadi(?, ?, ?)', [$datefrForm, $datetoForm, $compcode]);

@@ -16,8 +16,8 @@ class MutasiScrap extends Controller
 
   public function getMutasiScrap(Request $request)
   {
-    $datefrForm = $request->input('tanggal_dari');
-    $datetoForm = $request->input('tanggal_sampai');
+    $datefrForm = $request->input('dari');
+    $datetoForm = $request->input('sampai');
     $compcode = session()->get('comp_code');
 
     $results = DB::select('CALL rptmutasiscrap(?, ?, ?)', [$datefrForm, $datetoForm, $compcode]);
