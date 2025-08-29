@@ -139,9 +139,9 @@ $(function () {
     // Destroy any existing table instance
     destroyTable();
     $(dt_basic_table).after(`
-      <div class="row mt-2" id="footerTotals">
-        <div class="col text-end fw-bold">Total Barang</div>
-        <div class="col-auto">
+      <div class="row mt-3 g-3 px-3" id="footerTotals">
+        <div class="col-12 d-flex flex-column">
+          <label class="fw-bold text-start">Total Barang</label>
           <input type="text" class="form-control" id="totalStock" readonly />
         </div>
       </div>

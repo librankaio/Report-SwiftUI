@@ -27,7 +27,7 @@
 
 @section('page-script')
     <script>
-        const mutasmesinUrl = "{{ route('mutasimesindata') }}";
+        const mutasimesinUrl = "{{ route('mutasimesindata') }}";
     </script>
     <script type="module" src="{{ asset('assets/js/page-mutasimesin.js') }}"></script>
 @endsection

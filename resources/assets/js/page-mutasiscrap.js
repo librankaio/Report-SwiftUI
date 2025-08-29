@@ -140,25 +140,37 @@ $(function () {
     `);
 
     // Remove previous footer if exists
-    // $('#footerTotals').remove();
+    $('#footerTotals').remove();
     // Destroy any existing table instance
     destroyTable();
-    // $(dt_basic_table).after(`
-    //   <div class="row mt-2" id="footerTotals">
-    //     <div class="col text-end fw-bold">Total Rp.</div>
-    //     <div class="col-auto">
-    //       <input type="text" class="form-control" id="totalRp" readonly />
-    //     </div>
-    //     <div class="col text-end fw-bold">Total USD ($)</div>
-    //     <div class="col-auto">
-    //       <input type="text" class="form-control" id="totalUsd" readonly />
-    //     </div>
-    //   </div>
-    // `);
-
-    let lastNo = 0;
-    let lastDpNomor = null;
-    let lastBpbNomor = null;
+    $(dt_basic_table).after(`
+      <div class="row mt-3 g-3" id="footerTotals">
+        <div class="col-12 col-md-2 d-flex flex-column">
+          <label class="fw-bold text-start">Total Saldo Awal</label>
+          <input type="text" class="form-control" id="total_saldo_awal" readonly />
+        </div>
+        <div class="col-12 col-md-2 d-flex flex-column">
+          <label class="fw-bold text-start">Total Pemasukan</label>
+          <input type="text" class="form-control" id="total_pemasukan" readonly />
+        </div>
+        <div class="col-12 col-md-2 d-flex flex-column">
+          <label class="fw-bold text-start">Total Pengeluaran</label>
+          <input type="text" class="form-control" id="total_pengeluaran" readonly />
+        </div>
+        <div class="col-12 col-md-2 d-flex flex-column">
+          <label class="fw-bold text-start">Total Adjustment</label>
+          <input type="text" class="form-control" id="total_adjustment" readonly />
+        </div>
+        <div class="col-12 col-md-2 d-flex flex-column">
+          <label class="fw-bold text-start">Total Stock Akhir</label>
+          <input type="text" class="form-control" id="total_stock_akhir" readonly />
+        </div>
+        <div class="col-12 col-md-2 d-flex flex-column">
+          <label class="fw-bold text-start">Total Stock Opname</label>
+          <input type="text" class="form-control" id="total_stock_opname" readonly />
+        </div>
+      </div>
+    `);
 
     var dt = dt_basic_table.DataTable({
       processing: true,
@@ -242,38 +254,61 @@ $(function () {
       },
       drawCallback: function () {
         // Reset grouping counters
-        lastDpNomor = null;
-        lastBpbNomor = null;
-        lastNo = 0;
-
+        // Reset grouping counters
         let api = this.api();
-
         // Column index for nilai_barang (Rp)
-        let totalRp = api
-          .column(11, { search: 'applied' })
+        let total_saldo_awal = api
+          .column(4, { search: 'applied' })
           .data()
           .reduce((sum, val) => {
             let num = parseFloat((val + '').replace(/[^\d.-]/g, '')) || 0;
             return sum + num;
           }, 0);
-
         // Column index for nilai_barang_usd ($)
-        let totalUsd = api
-          .column(12, { search: 'applied' })
+        let total_pemasukan = api
+          .column(5, { search: 'applied' })
           .data()
           .reduce((sum, val) => {
             let num = parseFloat((val + '').replace(/[^\d.-]/g, '')) || 0;
             return sum + num;
           }, 0);
-
+        let total_pengeluaran = api
+          .column(6, { search: 'applied' })
+          .data()
+          .reduce((sum, val) => {
+            let num = parseFloat((val + '').replace(/[^\d.-]/g, '')) || 0;
+            return sum + num;
+          }, 0);
+        let total_adjustment = api
+          .column(7, { search: 'applied' })
+          .data()
+          .reduce((sum, val) => {
+            let num = parseFloat((val + '').replace(/[^\d.-]/g, '')) || 0;
+            return sum + num;
+          }, 0);
+        let total_stock_akhir = api
+          .column(8, { search: 'applied' })
+          .data()
+          .reduce((sum, val) => {
+            let num = parseFloat((val + '').replace(/[^\d.-]/g, '')) || 0;
+            return sum + num;
+          }, 0);
+        let total_stock_opname = api
+          .column(9, { search: 'applied' })
+          .data()
+          .reduce((sum, val) => {
+            let num = parseFloat((val + '').replace(/[^\d.-]/g, '')) || 0;
+            return sum + num;
+          }, 0);
         // Set to readonly inputs
-        $('#totalRp').val(`Rp. ${numberFormat(totalRp, 2, '.', ',')}`);
-        $('#totalUsd').val(`$ ${numberFormat(totalUsd, 2, '.', ',')}`);
+        $('#total_saldo_awal').val(`${numberFormat(total_saldo_awal, 2, '.', ',')}`);
+        $('#total_pemasukan').val(`${numberFormat(total_pemasukan, 2, '.', ',')}`);
+        $('#total_pengeluaran').val(`${numberFormat(total_pengeluaran, 2, '.', ',')}`);
+        $('#total_adjustment').val(`${numberFormat(total_adjustment, 2, '.', ',')}`);
+        $('#total_stock_akhir').val(`${numberFormat(total_stock_akhir, 2, '.', ',')}`);
+        $('#total_stock_opname').val(`${numberFormat(total_stock_opname, 2, '.', ',')}`);
       },
-      rowCallback: function (row, data) {
-        lastBpbNomor = data.bpbnomor;
-        lastDpNomor = data.dpnomor;
-      }
+      rowCallback: function (row, data) {}
     });
     // Helper to format date like PHP date('d/m/Y')
     function formatDate(dateStr) {
