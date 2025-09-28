@@ -17,6 +17,8 @@
 
 @section('vendor-script')
     <script src="{{ asset('assets/vendor/libs/datatables-bs5/datatables-bootstrap5.js') }}"></script>
+    {{-- baru --}}
+    {{-- end baru --}}
     <!-- Flat Picker -->
     <script src="{{ asset('assets/vendor/libs/moment/moment.js') }}"></script>
     <script src="{{ asset('assets/vendor/libs/flatpickr/flatpickr.js') }}"></script>
@@ -76,7 +78,11 @@
                         </select>
                         <label for="jenis_pencarian">Jenis Pencarian</label>
                     </div>
-                    <button type="button" class="btn btn-primary">View</button>
+                    {{-- <button type="button" class="btn btn-primary">View</button> --}}
+                    <div class="d-flex gap-2 mb-3">
+                        <button type="button" class="btn btn-primary" id="btn-view">View</button>
+                        <div id="export-container"></div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -106,16 +112,16 @@
                 </thead> --}}
                 <thead>
                     <tr>
-                        <th rowspan="2">No</th>
-                        <th rowspan="2">Jenis Dokumen</th>
-                        <th colspan="2">Dokumen Pabean</th>
-                        <th colspan="2">Bukti Penerimaan Barang</th>
-                        <th rowspan="2">Supplier</th>
-                        <th rowspan="2">Kode Barang</th>
-                        <th rowspan="2">Nama Barang</th>
-                        <th rowspan="2">Satuan</th>
-                        <th rowspan="2">Jumlah</th>
-                        <th colspan="2">Nilai Barang</th>
+                        <th rowspan="2" class="text-center">No</th>
+                        <th rowspan="2" class="text-center">Jenis Dokumen</th>
+                        <th colspan="2" class="text-center">Dokumen Pabean</th>
+                        <th colspan="2" class="text-center">Bukti Penerimaan Barang</th>
+                        <th rowspan="2" class="text-center">Supplier</th>
+                        <th rowspan="2" class="text-center">Kode Barang</th>
+                        <th rowspan="2" class="text-center">Nama Barang</th>
+                        <th rowspan="2" class="text-center">Satuan</th>
+                        <th rowspan="2" class="text-center">Jumlah</th>
+                        <th colspan="2" class="text-center">Nilai Barang</th>
                     </tr>
                     <tr>
                         <th>Nomor Pendaftaran</th>

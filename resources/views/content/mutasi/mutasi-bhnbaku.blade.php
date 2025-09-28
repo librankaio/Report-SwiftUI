@@ -62,17 +62,17 @@
             <table class="datatables-basic table table-bordered">
                 <thead>
                     <tr>
-                        <th>No</th>
-                        <th>Kode Barang</th>
-                        <th>Satuan</th>
-                        <th>Saldo Awal</th>
-                        <th>Pemasukan</th>
-                        <th>Pengeluaran</th>
-                        <th>Penyesuaian(Adjustment)</th>
-                        <th>Stock Akhir</th>
-                        <th>Stock Opname</th>
-                        <th>Selisih</th>
-                        <th>Keterangan</th>
+                        <th class="text-center">No</th>
+                        <th class="text-center">Kode Barang</th>
+                        <th class="text-center">Satuan</th>
+                        <th class="text-center">Saldo Awal</th>
+                        <th class="text-center">Pemasukan</th>
+                        <th class="text-center">Pengeluaran</th>
+                        <th class="text-center">Penyesuaian(Adjustment)</th>
+                        <th class="text-center">Stock Akhir</th>
+                        <th class="text-center">Stock Opname</th>
+                        <th class="text-center">Selisih</th>
+                        <th class="text-center">Keterangan</th>
                     </tr>
                 </thead>
             </table>

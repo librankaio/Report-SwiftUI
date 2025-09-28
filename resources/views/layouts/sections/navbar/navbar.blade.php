@@ -422,16 +422,16 @@
                         </div>
                     </a>
                 </li>
-                <li>
+                {{-- <li>
                     <div class="dropdown-divider"></div>
-                </li>
-                <li>
+                </li> --}}
+                {{-- <li>
                     <a class="dropdown-item"
                         href="{{ Route::has('profile.show') ? route('profile.show') : url('pages/profile-user') }}">
                         <i class="mdi mdi-account-outline me-2"></i>
                         <span class="align-middle">My Profile</span>
                     </a>
-                </li>
+                </li> --}}
 
                 <li>
                     <div class="dropdown-divider"></div>

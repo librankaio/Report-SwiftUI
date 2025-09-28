@@ -62,12 +62,12 @@
             <table class="datatables-basic table table-bordered">
                 <thead>
                     <tr>
-                        <th>No</th>
-                        <th>Kode Barang</th>
-                        <th>Nama Barang</th>
-                        <th>Satuan</th>
-                        <th>Jumlah</th>
-                        <th>Keterangan</th>
+                        <th class="text-center">No</th>
+                        <th class="text-center">Kode Barang</th>
+                        <th class="text-center">Nama Barang</th>
+                        <th class="text-center">Satuan</th>
+                        <th class="text-center">Jumlah</th>
+                        <th class="text-center">Keterangan</th>
                     </tr>
                 </thead>
             </table>

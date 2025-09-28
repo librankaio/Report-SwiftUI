@@ -62,10 +62,10 @@
             <table class="datatables-basic table table-bordered">
                 <thead>
                     <tr>
-                        <th>Nama User</th>
-                        <th>Jenis Transaksi</th>
-                        <th>Action</th>
-                        <th>Tanggal/Waktu</th>
+                        <th class="text-center">Nama User</th>
+                        <th class="text-center">Jenis Transaksi</th>
+                        <th class="text-center">Action</th>
+                        <th class="text-center">Tanggal/Waktu</th>
                     </tr>
                 </thead>
             </table>

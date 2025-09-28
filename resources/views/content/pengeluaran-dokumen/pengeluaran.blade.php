@@ -86,16 +86,16 @@
             <table id="dokumen-table" class="datatables-basic table table-bordered">
                 <thead>
                     <tr>
-                        <th rowspan="2">No</th>
-                        <th rowspan="2">Jenis Dokumen</th>
-                        <th colspan="2">Dokumen Pabean</th>
-                        <th colspan="2">Bukti Penerimaan Barang</th>
-                        <th rowspan="2">Customer</th>
-                        <th rowspan="2">Kode Barang</th>
-                        <th rowspan="2">Nama Barang</th>
-                        <th rowspan="2">Satuan</th>
-                        <th rowspan="2">Jumlah</th>
-                        <th colspan="2">Nilai Barang</th>
+                        <th rowspan="2" class="text-center">No</th>
+                        <th rowspan="2" class="text-center">Jenis Dokumen</th>
+                        <th colspan="2" class="text-center">Dokumen Pabean</th>
+                        <th colspan="2" class="text-center">Bukti Penerimaan Barang</th>
+                        <th rowspan="2" class="text-center">Customer</th>
+                        <th rowspan="2" class="text-center">Kode Barang</th>
+                        <th rowspan="2" class="text-center">Nama Barang</th>
+                        <th rowspan="2" class="text-center">Satuan</th>
+                        <th rowspan="2" class="text-center">Jumlah</th>
+                        <th colspan="2" class="text-center">Nilai Barang</th>
                     </tr>
                     <tr>
                         <th>Nomor Pendaftaran</th>

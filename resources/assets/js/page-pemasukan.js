@@ -241,14 +241,31 @@ $(function () {
     language: {
       emptyTable: 'No data available in table' // custom text if you want
     },
+    columnDefs: [
+      { targets: [1], width: '10px' }, // kolom Rupiah
+      { targets: [2], width: '20px' }, // kolom Rupiah
+      { targets: [11], width: '200px' }, // kolom Rupiah
+      { targets: [12], width: '180px' } // kolom USD
+    ],
     dom:
       // '<"card-header flex-column flex-md-row"<"head-label text-center"><"dt-action-buttons text-end pt-3 pt-md-0">B>' +
       '<"card-header flex-column flex-md-row"<"head-label text-center"><"dt-action-buttons text-end pt-3 pt-md-0"B>>' +
       '<"row"<"col-sm-12 col-md-6"l><"col-sm-12 col-md-6 d-flex justify-content-center justify-content-md-end"f>>' +
       '<"table-responsive"t>' +
       '<"row"<"col-sm-12 col-md-6"i><"col-sm-12 col-md-6"p>>',
-    buttons: exportButtons
+    buttons: exportButtons,
+    initComplete: function () {
+      let api = this.api();
+      new $.fn.dataTable.Buttons(api, { buttons: exportButtons });
+      api.buttons(0, null).container().appendTo($('#export-container').empty());
+      // hapus border dropdown langsung di sini
+      $('.dt-button-collection.dropdown-menu').css({
+        border: 'none',
+        boxShadow: '0 4px 10px rgba(0,0,0,0.15)' // opsional, biar lebih soft
+      });
+    }
   });
+
   // create/refresh the datatable with params
   function loadTable(jenis, dari, sampai, jenis_pencarian) {
     // Save last search parameters
